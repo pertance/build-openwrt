@@ -23,33 +23,46 @@ jobs:
             libncursesw5-dev libssl-dev python3 python3-distutils python3-setuptools \
             python3-pyelftools rsync subversion swig time unzip wget zlib1g-dev
 
-      - name: Clone OpenWrt master (latest snapshot)
+      - name: Clone OpenWrt master (shallow clone)
         run: |
-          git clone https://github.com/openwrt/openwrt.git
+          echo "开始克隆 OpenWrt 仓库..."
+          export GIT_TRACE=1
+          export GIT_CURL_VERBOSE=1
+          # Shallow clone 减少磁盘占用
+          git clone --depth=1 https://github.com/openwrt/openwrt.git
           cd openwrt
           git checkout master
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+          echo "OpenWrt 源码克隆完成。"
 
       - name: Add luci-theme-argon and OpenClash
         run: |
           cd openwrt
-          # 下载最新版 argon 主题
+          echo "添加 luci-theme-argon 和 OpenClash"
           git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-          # 下载最新版 OpenClash
           git clone https://github.com/vernesong/OpenClash.git package/luci-app-openclash
           ./scripts/feeds install -a
 
       - name: Copy custom config
         run: |
           cd openwrt
+          echo "复制自定义配置文件"
           cp ../.openwrt-config/.config .config
           make defconfig
 
-      - name: Build firmware
+      - name: Clean temporary files to save space
         run: |
           cd openwrt
-          make -j$(nproc)
+          echo "清理临时文件和缓存"
+          rm -rf /tmp/*
+          rm -rf dl/* build_dir/toolchain/*
+
+      - name: Build firmware (limited parallel jobs)
+        run: |
+          cd openwrt
+          echo "开始编译固件，限制并行任务为2"
+          make -j2 V=s
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
