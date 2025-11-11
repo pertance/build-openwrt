@@ -31,7 +31,6 @@ jobs:
           # Shallow clone 减少磁盘占用
           git clone --depth=1 https://github.com/openwrt/openwrt.git
           cd openwrt
-          git checkout master
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           echo "OpenWrt 源码克隆完成。"
