@@ -1,0 +1,58 @@
+name: x86-openwrt-build
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential ccache ecj fastjar file g++ gawk \
+            gettext git java-propose-classpath libelf-dev libncurses5-dev \
+            libncursesw5-dev libssl-dev python3 python3-distutils python3-setuptools \
+            python3-pyelftools rsync subversion swig time unzip wget zlib1g-dev
+
+      - name: Clone OpenWrt master (latest snapshot)
+        run: |
+          git clone https://github.com/openwrt/openwrt.git
+          cd openwrt
+          git checkout master
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Add luci-theme-argon and OpenClash
+        run: |
+          cd openwrt
+          # 下载最新版 argon 主题
+          git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+          # 下载最新版 OpenClash
+          git clone https://github.com/vernesong/OpenClash.git package/luci-app-openclash
+          ./scripts/feeds install -a
+
+      - name: Copy custom config
+        run: |
+          cd openwrt
+          cp ../.openwrt-config/.config .config
+          make defconfig
+
+      - name: Build firmware
+        run: |
+          cd openwrt
+          make -j$(nproc)
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openwrt-n305-firmware
+          path: openwrt/bin/targets/x86/64/
