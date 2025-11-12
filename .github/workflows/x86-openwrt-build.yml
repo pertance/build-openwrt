@@ -53,28 +53,28 @@ jobs:
           echo "⚙️ Configuring build for N305 x86_64"
           rm -f .config
           cat >> .config <<EOF
-CONFIG_TARGET_x86=y
-CONFIG_TARGET_x86_64=y
-CONFIG_TARGET_x86_64_Generic=y
-
-# Add Argon theme
-CONFIG_PACKAGE_luci-theme-argon=y
-# Add OpenClash
-CONFIG_PACKAGE_luci-app-openclash=y
-# Add Chinese language packs
-CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
-CONFIG_PACKAGE_luci-i18n-opkg-zh-cn=y
-CONFIG_PACKAGE_luci-i18n-firewall-zh-cn=y
-CONFIG_PACKAGE_luci-i18n-openclash-zh-cn=y
-
-# Remove unwanted packages
-CONFIG_PACKAGE_luci-theme-bootstrap=n
-CONFIG_PACKAGE_luci-theme-material=n
-CONFIG_PACKAGE_kmod-ath9k=n
-CONFIG_PACKAGE_kmod-ath10k=n
-CONFIG_PACKAGE_kmod-usb-printer=n
-
-EOF
+          CONFIG_TARGET_x86=y
+          CONFIG_TARGET_x86_64=y
+          CONFIG_TARGET_x86_64_Generic=y
+          
+          # Add Argon theme
+          CONFIG_PACKAGE_luci-theme-argon=y
+          # Add OpenClash
+          CONFIG_PACKAGE_luci-app-openclash=y
+          # Add Chinese language packs
+          CONFIG_PACKAGE_luci-i18n-base-zh-cn=y
+          CONFIG_PACKAGE_luci-i18n-opkg-zh-cn=y
+          CONFIG_PACKAGE_luci-i18n-firewall-zh-cn=y
+          CONFIG_PACKAGE_luci-i18n-openclash-zh-cn=y
+          
+          # Remove unwanted packages
+          CONFIG_PACKAGE_luci-theme-bootstrap=n
+          CONFIG_PACKAGE_luci-theme-material=n
+          CONFIG_PACKAGE_kmod-ath9k=n
+          CONFIG_PACKAGE_kmod-ath10k=n
+          CONFIG_PACKAGE_kmod-usb-printer=n
+          
+          EOF
 
           make defconfig
 
