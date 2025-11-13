@@ -3,10 +3,6 @@ name: Build OpenWrt x86-64 Custom
 
 on:
   workflow_dispatch:  # 手动触发
-  push:
-    branches:
-      - main
-      - master
 
 jobs:
   build:
