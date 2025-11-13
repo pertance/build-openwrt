@@ -52,6 +52,7 @@ jobs:
           # 1. 彻底清除旧的配置和编译残留
           echo "Removing old configurations and temporary files..."
           rm -f .config
+          # 清理编译缓存和残留
           make clean
           
           # 2. 更新并安装 Feeds
@@ -69,4 +70,5 @@ jobs:
         if: ${{ always() }} 
         with:
           limit-access-to-actor: true # 限制只有您本人可以连接
+
 
